@@ -1,0 +1,22 @@
+// Name: Jack Scacco
+// Due Date: 10.25.19
+// File: df.cpp
+// Purpose: Implement Diffie-Hellman key exchange
+
+#include <iostream>
+#include <math.h> /* pow */
+
+using namespace std;
+
+const size_t PRIME = 23;
+const size_t PRIM_ROOT = 5;
+
+/* Exponentiates the prime and the key, as per the first step of DH */
+size_t exp_val (const size_t prime, const size_t root, const size_t key){
+  return (size_t)pow((double)prime, (double)key)  % root;
+}
+
+int main() {
+  return 0;
+}
+  

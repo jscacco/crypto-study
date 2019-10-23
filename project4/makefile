@@ -1,8 +1,8 @@
-diffie-hellman: df.o
-	c++ -o diffie-hellman df.o
+diffie-hellman: dh.o
+	c++ -o diffie-hellman dh.o
 
-df.o: df.cpp
-	c++ -c df.cpp
+dh.o: dh.cpp
+	c++ -c dh.cpp
 
 clean:
-	rm *~ *#
+	rm *~ *# diffie-hellman dh.o
