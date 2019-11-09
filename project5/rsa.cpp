@@ -9,7 +9,7 @@
 #include <vector>
 #include <time.h> /* random seed generation */
 
-#include "InfInt.h" /* big int library */
+#include "big_int.h" /* big int library */
 
 using namespace std;
 
