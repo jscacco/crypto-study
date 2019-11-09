@@ -1,11 +1,11 @@
-rsa: rsa.o
-	c++ -DGLIBCXX_DEBUG -o rsa rsa.o big_int.o
+rsa: rsa.o BigInt.o
+	c++ -std=c++11 -DGLIBCXX_DEBUG -o rsa rsa.o BigInt.o
 
-rsa.o: rsa.cpp big_int.h
-	c++ -DGLIBCXX_DEBUG -c rsa.cpp
+rsa.o: rsa.cpp BigInt.h
+	c++ -std=c++11 -DGLIBCXX_DEBUG -c rsa.cpp
 
-big_int.o: big_int.cpp big_int.h
-	c++ -DGLIBCXX_DEBUG -c big_int.cpp
+BigInt.o: BigInt.cpp BigInt.h
+	c++ -std=c++11 -DGLIBCXX_DEBUG -c BigInt.cpp
 
 clean:
-	rm *~ *# rsa rsa.o
+	rm *~ *# rsa rsa.o BigInt.o

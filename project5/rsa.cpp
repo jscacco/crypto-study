@@ -8,8 +8,10 @@
 #include <cassert> /*assert */
 #include <vector>
 #include <time.h> /* random seed generation */
+#include <cstdlib>
+#include <climits>
 
-#include "big_int.h" /* big int library */
+#include "BigInt.h" /* big int library */
 
 using namespace std;
 
@@ -136,18 +138,24 @@ bool miller_rabin(size_t val, size_t limit) {
 }
 
 int main() {
-  
+  /*
   for (size_t val = 2; val < 100; val++) {
     cout << val << ": ";
     bool is_prime = miller_rabin(val, log(val) + 1);
     is_prime ? cout << "prime" : cout << "composite";
     cout << endl;
   }
- 
-  
+  */
   // prime_list(1048576);
   // prime_list(9999999);
   
+  BigInt * val1 = new BigInt("123456789123456789123456789123456789123456789");
+  BigInt * val2 = new BigInt("123123123123123123123123123123123123123123123");
+
+  BigInt * sum1 = val1->add(val2);
+  sum1->display(cout);
   
+  BigInt * sum2 = val2->add(val1);
+  sum2->display(cout);
 }
   
