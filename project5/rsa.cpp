@@ -4,7 +4,7 @@
 // Purpose: Implement RSA Encryption
 
 #include <iostream>
-#include <math.h> /* pow */
+#include <math.h> /* log2, sqrt */
 #include <cassert> /*assert */
 #include <vector>
 #include <time.h> /* random seed generation */
@@ -31,11 +31,11 @@ size_t exp_val_mod(const size_t base, const size_t exp, const size_t mod) {
 
 /* Given an upper bound n, returns a list of all primes less than n using the Sieve of Eratosthenes */
 vector<size_t> prime_list(size_t n) {
-  vector<bool> is_prime;    // This is the list of bools which determines if that index + 1 is a prime
-  for (size_t _ = 0; _ < n; _ ++) is_prime.push_back(true);
+
+  vector<bool> is_prime (n, true);    // This is the list of bools which determines if that index + 1 is a prime
   size_t current_prime = 2;  
 
-  while (current_prime < n) {
+  while (current_prime < sqrt(n)) {
     
     // Set the appropriate values in is_prime to false
     // TODO: Determine why this line is segfaulting for larger values! (like 1234567 but not 123456)
@@ -136,17 +136,18 @@ bool miller_rabin(size_t val, size_t limit) {
 }
 
 int main() {
-  /*
-  for (size_t val = 2; val < 99999; val++) {
+  
+  for (size_t val = 2; val < 100; val++) {
     cout << val << ": ";
-    bool is_prime = miller_rabin(val, val*2);
+    bool is_prime = miller_rabin(val, log(val) + 1);
     is_prime ? cout << "prime" : cout << "composite";
     cout << endl;
   }
-  */
-  cout << "test" << endl;
-  prime_list(1048576);
-  prime_list(1048577);
+ 
+  
+  // prime_list(1048576);
+  // prime_list(9999999);
+  
   
 }
   
