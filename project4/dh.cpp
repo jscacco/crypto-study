@@ -20,13 +20,15 @@ using namespace std;
 
 
 /* Exponentiates using recursion. */
-size_t exp_val(const size_t base, const size_t exp, const size_t mod) {
-  if (exp < 1) return base % mod;
+size_t exp_val_mod(const size_t base, const size_t exp, const size_t mod) {
+  if (exp == 0) return 1;
+  else if (exp == 1) return base % mod;
   else {
-    if (exp % 2 == 0) {size_t recur = exp_val(base, exp/2, mod); return (recur * recur) % mod;}
-    else { size_t recur = exp_val(base, (exp - 1)/2, mod); return (base * recur * recur) % mod; }
+    if (exp % 2 == 0) {size_t recur = exp_val_mod(base, exp/2, mod); return (recur * recur) % mod;}
+    else { size_t recur = exp_val_mod(base, (exp - 1)/2, mod); return (base * recur * recur) % mod; }
   }
 }
+
 
 size_t gen_val(const size_t prime, const size_t root, const size_t key){
   return exp_val(root, key, prime);  
