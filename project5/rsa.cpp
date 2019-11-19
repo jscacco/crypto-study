@@ -294,6 +294,70 @@ bool miller_rabin(mpz_t val, const size_t limit) {
   return true;
 }
 
+// Return true if attempt^(val-1/2)mpd val is 1 or val-1
+bool strong_prime_test(mpz_t attempt, mpz_t val) {
+
+  mpz_t temp1;
+  mpz_t temp2;
+  mpz_init(temp1);
+  mpz_init(temp2);
+
+  mpz_sub_ui(temp1, val, 1);
+  mpz_div_ui(temp1, temp1, 2);
+  mpz_powm(temp1, attempt, temp1, val);
+
+  mpz_sub_ui(temp2, val, 1);
+  
+  if (mpz_cmp_ui(temp1, 1) == 0 || mpz_cmp(temp1, temp2) == 0) {
+    mpz_clear(temp1);
+    mpz_clear(temp2);
+    return true;
+  }
+  
+  mpz_clear(temp1);
+  mpz_clear(temp2);
+  return false;
+}
+
+
+/*Returns True if the passed value is prime */
+bool is_probable_prime(mpz_t val, size_t limit) {
+  if (mpz_cmp_ui(val, 2) == 0) return true;
+  else if (mpz_even_p(val) != 0) return false;
+  else {
+    mpz_t attempt, this_gcd, upper_bound;
+    mpz_init(attempt);
+    mpz_init(this_gcd);
+    mpz_init(upper_bound);
+    unsigned long seed;
+    
+    mpz_sub_ui(upper_bound, val, 2);
+    
+    gmp_randstate_t rstate;
+    gmp_randinit_mt(rstate);
+    gmp_randseed_ui(rstate, seed);
+    
+    for (size_t _ = 0; _ < limit; _++) {
+      mpz_urandomm(attempt, rstate, upper_bound);
+      mpz_add_ui(attempt, attempt, 2);
+      
+      mpz_gcd(this_gcd, val, attempt);
+      if ((mpz_cmp_ui(this_gcd, 1) != 0) || !strong_prime_test(attempt, val)) {
+	mpz_clear(attempt);
+	mpz_clear(this_gcd);
+	mpz_clear(upper_bound);
+	gmp_randclear(rstate);
+	return false;
+      }
+    }
+    mpz_clear(attempt);
+    mpz_clear(this_gcd);
+    mpz_clear(upper_bound);
+    gmp_randclear(rstate);
+  }
+  return true;
+}
+
 
 /* Sets prime to a bits-bit long prime number. */
 void mpz_gen_prime(mpz_t prime, size_t bits) {
@@ -319,9 +383,7 @@ void mpz_gen_prime(mpz_t prime, size_t bits) {
     // digits[bits] = 0;
 
     // Check to see if the bits are prime
-    // TODO: Actually use my own primality testing, once it speeds up
-    //if (miller_rabin(prime, 50)) return;
-    if(mpz_probab_prime_p(prime, 50)) return;
+    if (is_probable_prime(prime, 1000)) return;
   }
   assert(false);
 }
@@ -391,14 +453,17 @@ int main() {
   */
 
 
-  // Test miller_rabin
+  // Test is_probable_prime
   /*
   mpz_t prime;
   mpz_init(prime);
-  mpz_set_str(prime, "12345", 10);
-  cout << miller_rabin(prime, 50) << endl;
+  for (size_t i = 2; i < 100; i++){
+    mpz_set_ui(prime, i);
+    cout << to_string(i) << ": ";
+    if(is_probable_prime(prime, 50)) cout << "prime" << endl;
+    else cout << "composite" << endl;
+  }
   */
-
   
   // Test gen_modulus
   /*
@@ -422,7 +487,7 @@ int main() {
   mpz_init(e);
   mpz_init(d);
 
-  gen_rsa(n, e, d, 1024);
+  gen_rsa(n, e, d, 2048);
 
   mpz_t m1, m2, c;
   mpz_init(m1);
